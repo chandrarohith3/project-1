@@ -54,7 +54,8 @@ jobs:
             libpulse-dev \
             libjpeg-dev \
             libfreetype6-dev \
-            libgl1
+            libgl1 \
+            curl
 
       - name: Install Buildozer and Cython
         run: |
@@ -65,27 +66,28 @@ jobs:
         run: |
           if [ ! -f buildozer.spec ]; then buildozer init; fi
 
-      - name: First Build to Trigger SDK Download
+      - name: Clean any previous build
         run: |
           buildozer android clean || true
-          buildozer android debug || true
 
-      - name: Manually Download Android cmdline-tools
+      - name: Manually Download and Set Up Android cmdline-tools
         run: |
-          mkdir -p $HOME/.buildozer/android/platform/android-sdk/cmdline-tools
-          cd $HOME/.buildozer/android/platform/android-sdk/cmdline-tools
-          curl -o commandlinetools.zip https://dl.google.com/android/repository/commandlinetools-linux-11076708_latest.zip
-          unzip -q commandlinetools.zip
-          rm commandlinetools.zip
-          mv cmdline-tools latest
+          export ANDROID_HOME=$HOME/.buildozer/android/platform/android-sdk
+          mkdir -p $ANDROID_HOME/cmdline-tools
+          cd $ANDROID_HOME/cmdline-tools
+          curl -o tools.zip https://dl.google.com/android/repository/commandlinetools-linux-11076708_latest.zip
+          unzip -q tools.zip
+          rm tools.zip
+          mkdir -p $ANDROID_HOME/cmdline-tools/latest
+          mv cmdline-tools/* $ANDROID_HOME/cmdline-tools/latest/
 
-      - name: Accept Licenses & Install Build-Tools
+      - name: Install Required SDK Components
         run: |
-          export SDK_ROOT=$HOME/.buildozer/android/platform/android-sdk
-          export PATH=$SDK_ROOT/cmdline-tools/latest/bin:$PATH
-
+          export ANDROID_HOME=$HOME/.buildozer/android/platform/android-sdk
+          export PATH=$ANDROID_HOME/cmdline-tools/latest/bin:$PATH
           yes | sdkmanager --licenses
-          sdkmanager "build-tools;36.0.0"
+          sdkmanager --update
+          sdkmanager "platform-tools" "platforms;android-33" "build-tools;33.0.2"
 
       - name: Final APK Build
         run: |
