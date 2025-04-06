@@ -97,7 +97,7 @@ fullscreen = 0
 # (See https://python-for-android.readthedocs.io/en/latest/buildoptions/#build-options-1 for all the supported syntaxes and properties)
 #android.permissions = android.permission.INTERNET, android.permission.WRITE_EXTERNAL_STORAGE, android.permission.ACCESS_FINE_LOCATION, android.permission.ACCESS_COARSE_LOCATION
 
-
+hostpython.version = 3.8
 # (list) features (adds uses-feature -tags to manifest)
 #android.features = android.hardware.usb.host
 
@@ -112,7 +112,7 @@ android.minapi = 22
 
 # (str) Android NDK version to use
 android.ndk = 25b
-android.allow_hostpython = 0
+android.allow_hostpython = 1
 # (int) Android NDK API to use. This is the minimum API your app will support, it should usually match android.minapi.
 android.ndk_api = 21
 # Prefer prebuilt Python to avoid building hostpython3
