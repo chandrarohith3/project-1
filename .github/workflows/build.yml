@@ -26,6 +26,9 @@ jobs:
             build-essential \
             ccache \
             git \
+            autoconf \
+            automake \
+            libtool \
             libffi-dev \
             libssl-dev \
             libsqlite3-dev \
@@ -80,7 +83,7 @@ jobs:
           rm tools.zip
           mv tmp/cmdline-tools $ANDROID_HOME/cmdline-tools/latest
 
-          #  FIX: Buildozer expects sdkmanager at tools/bin
+          # FIX: Buildozer expects sdkmanager at tools/bin
           mkdir -p $ANDROID_HOME/tools/bin
           ln -sf $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager $ANDROID_HOME/tools/bin/sdkmanager
           ln -sf $ANDROID_HOME/cmdline-tools/latest/bin/avdmanager $ANDROID_HOME/tools/bin/avdmanager
