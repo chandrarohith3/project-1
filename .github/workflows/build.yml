@@ -27,7 +27,6 @@ jobs:
             ccache \
             git \
             libffi-dev \
-            libncurses5 \
             libssl-dev \
             libsqlite3-dev \
             libz-dev \
@@ -55,7 +54,7 @@ jobs:
             libpulse-dev \
             libjpeg-dev \
             libfreetype6-dev \
-            libgl1-mesa-glx
+            libgl1
 
       - name: Install Buildozer and Cython
         run: |
