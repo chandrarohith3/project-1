@@ -65,19 +65,26 @@ jobs:
         run: |
           if [ ! -f buildozer.spec ]; then buildozer init; fi
 
-      - name: First run to auto-download SDK and tools
+      - name: First Buildozer Run to Setup SDK
         run: |
           buildozer android clean || true
-          buildozer android debug || true  # expected to fail on license
+          buildozer android debug || true
 
       - name: Accept SDK Licenses and Install Build Tools
         run: |
+          set -e
           SDKMANAGER="$HOME/.buildozer/android/platform/android-sdk/cmdline-tools/latest/bin/sdkmanager"
+
+          # Fallback for older cmdline-tools path
           if [ ! -f "$SDKMANAGER" ]; then
             SDKMANAGER="$HOME/.buildozer/android/platform/android-sdk/cmdline-tools/bin/sdkmanager"
           fi
-          yes | $SDKMANAGER --licenses
-          $SDKMANAGER "build-tools;36.0.0"
+
+          echo "Using sdkmanager path: $SDKMANAGER"
+          chmod +x "$SDKMANAGER"
+
+          yes | "$SDKMANAGER" --licenses
+          "$SDKMANAGER" "build-tools;36.0.0"
 
       - name: Final Build
         run: |
