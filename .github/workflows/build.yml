@@ -61,32 +61,33 @@ jobs:
           python -m pip install --upgrade pip
           pip install cython==0.29.33 buildozer==1.5.0
 
-      - name: Initialize Buildozer (if needed)
+      - name: Initialize Buildozer
         run: |
           if [ ! -f buildozer.spec ]; then buildozer init; fi
 
-      - name: First Buildozer Run to Setup SDK
+      - name: First Build to Trigger SDK Download
         run: |
           buildozer android clean || true
           buildozer android debug || true
 
-      - name: Accept SDK Licenses and Install Build Tools
+      - name: Manually Download Android cmdline-tools
         run: |
-          set -e
-          SDKMANAGER="$HOME/.buildozer/android/platform/android-sdk/cmdline-tools/latest/bin/sdkmanager"
+          mkdir -p $HOME/.buildozer/android/platform/android-sdk/cmdline-tools
+          cd $HOME/.buildozer/android/platform/android-sdk/cmdline-tools
+          curl -o commandlinetools.zip https://dl.google.com/android/repository/commandlinetools-linux-11076708_latest.zip
+          unzip -q commandlinetools.zip
+          rm commandlinetools.zip
+          mv cmdline-tools latest
 
-          # Fallback for older cmdline-tools path
-          if [ ! -f "$SDKMANAGER" ]; then
-            SDKMANAGER="$HOME/.buildozer/android/platform/android-sdk/cmdline-tools/bin/sdkmanager"
-          fi
+      - name: Accept Licenses & Install Build-Tools
+        run: |
+          export SDK_ROOT=$HOME/.buildozer/android/platform/android-sdk
+          export PATH=$SDK_ROOT/cmdline-tools/latest/bin:$PATH
 
-          echo "Using sdkmanager path: $SDKMANAGER"
-          chmod +x "$SDKMANAGER"
+          yes | sdkmanager --licenses
+          sdkmanager "build-tools;36.0.0"
 
-          yes | "$SDKMANAGER" --licenses
-          "$SDKMANAGER" "build-tools;36.0.0"
-
-      - name: Final Build
+      - name: Final APK Build
         run: |
           buildozer android debug
 
