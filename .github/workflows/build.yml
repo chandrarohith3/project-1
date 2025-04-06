@@ -7,13 +7,14 @@ on:
 jobs:
   build:
     runs-on: ubuntu-20.04
+
     steps:
-      - uses: actions/checkout@v4  # Updated from v2 to v4
+      - uses: actions/checkout@v4  # Updated to latest version
 
       - name: Get Date
         id: get-date
         run: echo "date=$(/bin/date -u '+%Y%m%d')" >> "$GITHUB_OUTPUT"
-        shell: bash  # Updated output method for GitHub Actions v4 compatibility
+        shell: bash  # Uses GitHub Actions v4 output format
 
       - name: Cache Buildozer global directory
         uses: actions/cache@v3
@@ -33,9 +34,10 @@ jobs:
         with:
           command: buildozer android debug
           buildozer_version: stable
+          image: kivy/buildozer:python3  # Specify a compatible image tag
 
       - name: Upload artifacts
-        uses: actions/upload-artifact@v4  # Updated from v2 to v4
+        uses: actions/upload-artifact@v4  # Updated to v4
         with:
           name: package
           path: ${{ steps.buildozer.outputs.filename }}
