@@ -9,18 +9,27 @@ jobs:
     runs-on: ubuntu-20.04
 
     steps:
-      - uses: actions/checkout@v4  # Updated to latest version
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+
+      - name: Install dependencies
+        run: |
+          sudo apt update
+          sudo apt install -y \
+            build-essential ccache git zip unzip openjdk-8-jdk python3-pip \
+            libncurses5 libstdc++6 libgtk2.0-0 libpangox-1.0-0 \
+            libpangoxft-1.0-0 libidn11 libpython3-dev
+          pip install --upgrade pip setuptools cython
+          pip install buildozer
 
       - name: Get Date
         id: get-date
         run: echo "date=$(/bin/date -u '+%Y%m%d')" >> "$GITHUB_OUTPUT"
-        shell: bash  # Uses GitHub Actions v4 output format
-
-      - name: Cache Buildozer global directory
-        uses: actions/cache@v3
-        with:
-          path: .buildozer_global
-          key: buildozer-global-${{ hashFiles('buildozer.spec') }}
 
       - name: Cache .buildozer directory
         uses: actions/cache@v3
@@ -28,16 +37,11 @@ jobs:
           path: .buildozer
           key: ${{ runner.os }}-${{ steps.get-date.outputs.date }}-${{ hashFiles('buildozer.spec') }}
 
-      - name: Build with Buildozer
-        uses: ArtemSBulgakov/buildozer-action@v1
-        id: buildozer
-        with:
-          command: buildozer android debug
-          buildozer_version: stable
-          image: kivy/buildozer:python3  # Specify a compatible image tag
+      - name: Build Android APK
+        run: buildozer android debug
 
-      - name: Upload artifacts
-        uses: actions/upload-artifact@v4  # Updated to v4
+      - name: Upload APK Artifact
+        uses: actions/upload-artifact@v4
         with:
-          name: package
-          path: ${{ steps.buildozer.outputs.filename }}
+          name: debug-apk
+          path: bin/*.apk
