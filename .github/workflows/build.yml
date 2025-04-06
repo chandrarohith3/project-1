@@ -65,13 +65,21 @@ jobs:
         run: |
           if [ ! -f buildozer.spec ]; then buildozer init; fi
 
-      - name: Prewarm Buildozer & Accept Licenses
+      - name: First run to auto-download SDK and tools
         run: |
           buildozer android clean || true
-          yes | ~/.buildozer/android/platform/android-sdk/cmdline-tools/latest/bin/sdkmanager --licenses
-          ~/.buildozer/android/platform/android-sdk/cmdline-tools/latest/bin/sdkmanager "build-tools;36.0.0"
+          buildozer android debug || true  # expected to fail on license
 
-      - name: Build the APK
+      - name: Accept SDK Licenses and Install Build Tools
+        run: |
+          SDKMANAGER="$HOME/.buildozer/android/platform/android-sdk/cmdline-tools/latest/bin/sdkmanager"
+          if [ ! -f "$SDKMANAGER" ]; then
+            SDKMANAGER="$HOME/.buildozer/android/platform/android-sdk/cmdline-tools/bin/sdkmanager"
+          fi
+          yes | $SDKMANAGER --licenses
+          $SDKMANAGER "build-tools;36.0.0"
+
+      - name: Final Build
         run: |
           buildozer android debug
 
