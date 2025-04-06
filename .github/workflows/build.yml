@@ -80,6 +80,10 @@ jobs:
           rm tools.zip
           mkdir -p $ANDROID_HOME/cmdline-tools/latest
           mv cmdline-tools/* $ANDROID_HOME/cmdline-tools/latest/
+          
+          #  Symlink old tools path for Buildozer compatibility
+          mkdir -p $ANDROID_HOME/tools
+          ln -s $ANDROID_HOME/cmdline-tools/latest $ANDROID_HOME/tools/bin
 
       - name: Install Required SDK Components
         run: |
