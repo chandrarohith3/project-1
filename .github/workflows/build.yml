@@ -61,19 +61,14 @@ jobs:
           python -m pip install --upgrade pip
           pip install cython==0.29.33 buildozer==1.5.0
 
-      - name: Accept Android SDK licenses
-        run: yes | sdkmanager --licenses || true
-
-      - name: Ensure Android SDK components
-        run: |
-          yes | sdkmanager \
-            "build-tools;36.0.0" \
-            "platform-tools" \
-            "platforms;android-33" || true
-
       - name: Initialize Buildozer (if needed)
         run: |
           if [ ! -f buildozer.spec ]; then buildozer init; fi
+
+      - name: Pre-accept Android SDK Licenses (Workaround)
+        run: |
+          mkdir -p ~/.android
+          echo "8933bad161af4178b1185d1a37fbf41ea5269c55" > ~/.android/repositories.cfg
 
       - name: Build the APK
         run: |
