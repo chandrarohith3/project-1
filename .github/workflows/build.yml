@@ -65,10 +65,11 @@ jobs:
         run: |
           if [ ! -f buildozer.spec ]; then buildozer init; fi
 
-      - name: Pre-accept Android SDK Licenses (Workaround)
+      - name: Prewarm Buildozer & Accept Licenses
         run: |
-          mkdir -p ~/.android
-          echo "8933bad161af4178b1185d1a37fbf41ea5269c55" > ~/.android/repositories.cfg
+          buildozer android clean || true
+          yes | ~/.buildozer/android/platform/android-sdk/cmdline-tools/latest/bin/sdkmanager --licenses
+          ~/.buildozer/android/platform/android-sdk/cmdline-tools/latest/bin/sdkmanager "build-tools;36.0.0"
 
       - name: Build the APK
         run: |
