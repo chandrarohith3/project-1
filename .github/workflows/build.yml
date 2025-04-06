@@ -98,6 +98,9 @@ jobs:
           sdkmanager --update
           sdkmanager "platform-tools" "platforms;android-33" "build-tools;33.0.2"
 
+      - name: Remove old NDK (ensure 23b is used)
+        run: rm -rf ~/.buildozer/android/platform/android-ndk-*
+
       - name: Final APK Build
         run: |
           buildozer android debug
