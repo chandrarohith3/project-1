@@ -17,7 +17,7 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
-          python-version: "3.7.6"
+          python-version: "3.9"
 
       - name: Install system dependencies
         run: |
@@ -30,6 +30,7 @@ jobs:
             automake \
             libtool \
             libltdl-dev \
+            libtool \
             libffi-dev \
             libssl-dev \
             libsqlite3-dev \
@@ -99,7 +100,7 @@ jobs:
 
       - name: Final APK Build
         run: |
-          buildozer android debug --verbose
+          buildozer android debug
 
       - name: Upload APK Artifact
         uses: actions/upload-artifact@v4
