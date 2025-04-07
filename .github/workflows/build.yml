@@ -11,7 +11,7 @@ jobs:
     runs-on: ubuntu-latest
 
     env:
-      ANDROID_NDK: 27c  
+      ANDROID_NDK: 25b  
 
     steps:
       - name: Checkout code
