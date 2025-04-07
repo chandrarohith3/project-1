@@ -67,7 +67,7 @@ jobs:
       - name: Upgrade pip and install buildozer + cython
         run: |
           pip install --upgrade pip
-          pip install cython==3.0.12 buildozer==1.5.0 python-for-android==2023.09.03
+          pip install cython==3.0.12 buildozer==1.5.0 python-for-android==2023.09.16
 
 
       - name: Initialize Buildozer
