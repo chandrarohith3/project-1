@@ -11,7 +11,7 @@ jobs:
     runs-on: ubuntu-latest
 
     env:
-      ANDROID_NDK: 23b  
+      ANDROID_NDK: 27c  
 
     steps:
       - name: Checkout code
@@ -20,7 +20,7 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
-          python-version: "3.9"
+          python-version: "3.10"
 
       - name: Install system dependencies
         run: |
